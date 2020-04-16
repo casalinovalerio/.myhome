@@ -166,7 +166,7 @@ img {
 		color: black;
 	}
 	/* Move top-level headings to a new page on the right-hand side: */
-	h1, h2 {
+	h1 {
 		page-break-before: right;
 		break-before: recto;
 	}
