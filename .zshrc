@@ -13,7 +13,7 @@ HISTSIZE=1000
 SAVEHIST=1000
 
 # Custom bin paths
-[ -d "$HOME/scripts" ] && PATH="$HOME/scripts:$PATH"
+[ -d "$HOME/scripts" ] && PATH="$HOME/scripts/sh:$PATH"
 [ -d "/opt/bin" ] && PATH="/opt/bin:$PATH"
 PATH="/usr/local/bin:/usr/local/sbin/:$PATH"
 
