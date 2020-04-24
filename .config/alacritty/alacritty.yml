@@ -13,7 +13,7 @@ window:
         startup_mode: Windowed
 
 scrolling:
-        history: 100
+        history: 500
         multiplier: 3
 
 font:
