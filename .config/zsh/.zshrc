@@ -8,7 +8,8 @@ zle -N history-beginning-search-forward-end history-search-end
 
 ### Set variables
 #################
-HISTFILE="$HOME/.zsh/.zhistory"
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+HISTFILE="$CONFIG_DIR/.zhistory"
 HISTSIZE=1000
 SAVEHIST=1000
 
@@ -18,7 +19,7 @@ SAVEHIST=1000
 PATH="/usr/local/bin:/usr/local/sbin/:$PATH"
 
 # Custom locations
-ZSH_CUSTOM_COMPLETION_PATH="$HOME/.zsh/custom/completion/"
+ZSH_CUSTOM_COMPLETION_PATH="$CONFIG_DIR/custom/completion/"
 
 ### Load colors
 ###############
@@ -74,7 +75,7 @@ bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 ### Completion Settings
 #######################
 zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path ~/.zsh/cache/$HOST
+zstyle ':completion::complete:*' cache-path "$CONFIG_DIR/cache/$HOST"
 zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
 zstyle ':completion:*' menu select=1 _complete _ignored _approximate
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/2 )) numeric )'
