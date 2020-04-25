@@ -48,6 +48,8 @@ alias ls="ls -CF --color=auto"
 alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias grep='grep --color=auto'
 alias open="xdg-open"
+alias vibindings="bindkey -v"
+alias embindings="bindkey -e"
 alias myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME"
 
 ### Add custom completions
@@ -58,6 +60,7 @@ alias myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME"
 #############
 autoload -U compinit
 compinit
+bindkey -e
 bindkey "^?" backward-delete-char
 bindkey "\e[3~" delete-char
 bindkey "\e[1;5D" backward-word
