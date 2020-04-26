@@ -15,7 +15,7 @@ syntax on
 " multiple files when re-using the same window in this way. Note that using 
 " persistent undo also lets you undo in multiple files even in the same window, 
 " but is less efficient and is actually designed for keeping undo history after 
-" closing Vim entirely. Vim will complain if you try to quit without saving, and 
+" closing Vim entirely. Vim will complain if you try to quit without saving, and
 " swap files will keep you safe if your computer crashes.
 set hidden
  
@@ -88,7 +88,7 @@ set t_vb=
 set mouse=r
  
 " Display line numbers on the left
-set number
+" set number
 
 " Use 4 spaces instead of tabs
 set shiftwidth=4
