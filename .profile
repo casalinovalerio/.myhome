@@ -4,7 +4,7 @@ XDG_DATA_HOME="$HOME/.local/share"
 XDG_CACHE_HOME="$HOME/.cache"
 
 # Use vim, nano as fallback
-command -v vim >/dev/null && export EDITOR=/usr/bin/vim || export EDITOR=/usr/bin/nano
+command -v nvim >/dev/null && export EDITOR=/usr/bin/nvim || export EDITOR=/usr/bin/nano
 
 # Change .zshrc to config home
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
