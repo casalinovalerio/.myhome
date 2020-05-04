@@ -1,6 +1,7 @@
 export TERM="xterm-256color"
 
-setopt menu_complete inc_append_history autocd recexact longlistjobs histignorealldups autopushd nobgnice autoparamslash
+setopt menu_complete inc_append_history autocd recexact longlistjobs
+setopt histignorealldups autopushd nobgnice autoparamslash
 
 autoload -U history-search-end
 zle -N history-beginning-search-backward-end history-search-end
@@ -33,7 +34,11 @@ done
 
 ### set common functions
 ########################
-function url_encode() {	python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"; }
+function url_encode() {
+    # Works only with python3
+    python3 -c \
+        "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"
+}
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
 function makezip() { zip -r "${1%%/}.zip" "$1" ; }
 
@@ -79,10 +84,13 @@ bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 #######################
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "$CONFIG_DIR/cache/$HOST"
-zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
+zstyle ':completion:*' list-prompt \
+    '%SAt %p: Hit TAB for more, or the character to insert%s'
 zstyle ':completion:*' menu select=1 _complete _ignored _approximate
-zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/2 )) numeric )'
-zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+zstyle -e ':completion:*:approximate:*' max-errors \
+    'reply=( $(( ($#PREFIX+$#SUFFIX)/2 )) numeric )'
+zstyle ':completion:*' select-prompt \
+    '%SScrolling active: current selection at %p%s'
 
 ### Completion Styles
 #####################
@@ -114,9 +122,51 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 ### Source plugins
 ##################
-source "/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-source "/usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-# Use starship ( https://starship.rs )
-#eval "$(starship init zsh)"
-source <("/usr/local/bin/starship" init zsh --print-full-init)
+### Prompt configuration
+########################
+autoload -Uz vcs_info
+setopt prompt_subst 
+
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' stagedstr '!'
+
+zstyle ':vcs_info:git*+set-message:*' hooks git-st git-untracked
+
+function +vi-git-st() {
+    local ahead behind
+    local -a gitstatus
+    ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null \
+        | wc -l)
+    (( $ahead )) && gitstatus+=( "+${ahead}" )
+    behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null \
+        | wc -l)
+    (( $behind )) && gitstatus+=( "-${behind}" )
+    hook_com[misc]+=${(j:/:)gitstatus}
+}
+
+function +vi-git-untracked() { 
+    git status -s | grep '^??' >/dev/null && hook_com[staged]+='?'
+}
+
+zstyle ':vcs_info:*' formats \
+    '%F{5}%r/%S%f %F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%c ⥯:%m%f '
+
+dir_prompt() { 
+    CORRECT="%F{34}»%f"
+    WRONG="%F{160}⛌%f"
+    [ "$(id -un)" = "root" ] \
+        && USER="%F{124}%n%f" \
+        || USER="%F{221}%n%f"
+    [ "$vcs_info_msg_0_" = "" ] \
+        && CURR_DIR="%F{69}%3~%f" \
+        || CURR_DIR="$vcs_info_msg_0_"
+    
+    PS1=$( echo "$USER in $CURR_DIR %(?.$CORRECT.$WRONG) " ) 
+    unset USER CURR_DIR CORRECT WRONG
+}
+
+precmd_functions+=( vcs_info )
+precmd_functions+=( dir_prompt )
