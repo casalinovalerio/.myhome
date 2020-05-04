@@ -140,11 +140,11 @@ function +vi-git-st() {
     local -a gitstatus
     ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null \
         | wc -l)
-    (( $ahead )) && gitstatus+=( "+${ahead}" )
+    (( $ahead )) && gitstatus+=( "🠕${ahead}" )
     behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null \
         | wc -l)
-    (( $behind )) && gitstatus+=( "-${behind}" )
-    hook_com[misc]+=${(j:/:)gitstatus}
+    (( $behind )) && gitstatus+=( "🠗${behind}" )
+    hook_com[misc]+="${(j:/:)gitstatus}"
 }
 
 function +vi-git-untracked() { 
@@ -152,7 +152,7 @@ function +vi-git-untracked() {
 }
 
 zstyle ':vcs_info:*' formats \
-    '%F{5}%r/%S%f %F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%c ⥯:%m%f '
+    '%F{5}%r/%S%f %F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%c%m%f '
 
 dir_prompt() { 
     CORRECT="%F{34}»%f"
