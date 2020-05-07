@@ -132,7 +132,6 @@ setopt prompt_subst
 
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' stagedstr '!'
-
 zstyle ':vcs_info:git*+set-message:*' hooks git-st git-untracked
 
 function +vi-git-st() {
@@ -154,19 +153,35 @@ function +vi-git-untracked() {
 zstyle ':vcs_info:*' formats \
     '%F{5}%r/%S%f %F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%c%m%f '
 
-dir_prompt() { 
-    CORRECT="%F{34}»%f"
-    WRONG="%F{160}⛌%f"
-    [ "$(id -un)" = "root" ] \
-        && USER="%F{124}%n%f" \
-        || USER="%F{221}%n%f"
-    [ "$vcs_info_msg_0_" = "" ] \
-        && CURR_DIR="%F{69}%3~%f" \
-        || CURR_DIR="$vcs_info_msg_0_"
-    
-    PS1=$( echo "$USER in $CURR_DIR %(?.$CORRECT.$WRONG) " ) 
-    unset USER CURR_DIR CORRECT WRONG
+prompt() {
+    local usr workdir st errcode elapsed
+    usr="%(!.%F{9}%n%f.%F{11}%n%f)"
+    workdir="%(1V.${psvar[1]/./}.%F{6}%3~%f)"
+    st="%(?.%F{2}>>%f.%F{9}>>%f)"
+    errcode="%(?..%F{9}%?%f)"
+    elapsed="%(2V. took %F{13}${psvar[2]}%f.)"
+    PROMPT="$usr in ${workdir}${elapsed} $st "
+    RPROMPT="$errcode"
 }
 
-precmd_functions+=( vcs_info )
-precmd_functions+=( dir_prompt )
+my_vcs_info() { vcs_info && psvar[1]=( "$vcs_info_msg_0_" ) }
+my_timer_start() { timer_start=$( date +%s ); }
+my_timer_show() { 
+    local elapsed hours minutes seconds
+    psvar[2]=( "" )
+    [ -n $timer_start ] \
+		&& elapsed=$(( $(date +%s) - ${timer_start:-$( date +%s )} )) \
+		|| return 0
+    [ $elapsed -lt 3 ] && return 0
+    [ $elapsed -lt 60 ] && psvar[2]=( "${elapsed}s") && return 0
+    seconds=$(($elapsed%60))
+    minutes=$(($elapsed/60))
+    [ $elapsed -lt 3600 ] && psvar[2]=( "${minutes}m${seconds}s" ) && return 0
+    hours=$(($minutes/60))
+    psvar[2]=( "${hours}h${minutes}m${seconds}s" )
+}
+
+preexec_functions+=( my_timer_start )
+precmd_functions+=( my_vcs_info )
+precmd_functions+=( my_timer_show )
+precmd_functions+=( prompt )
