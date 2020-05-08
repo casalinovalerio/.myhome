@@ -132,22 +132,26 @@ setopt prompt_subst
 
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' stagedstr '!'
-zstyle ':vcs_info:git*+set-message:*' hooks git-st git-untracked
+zstyle ':vcs_info:git*+set-message:*' hooks git-st git-untracked git-modified
 
 function +vi-git-st() {
     local ahead behind
     local -a gitstatus
     ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null \
         | wc -l)
-    (( $ahead )) && gitstatus+=( "🠕${ahead}" )
+    (( $ahead )) && gitstatus+=( "+${ahead}" )
     behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null \
         | wc -l)
-    (( $behind )) && gitstatus+=( "🠗${behind}" )
+    (( $behind )) && gitstatus+=( "-${behind}" )
     hook_com[misc]+="${(j:/:)gitstatus}"
 }
 
 function +vi-git-untracked() { 
     git status -s | grep '^??' >/dev/null && hook_com[staged]+='?'
+}
+
+function +vi-git-modified() {
+    git status -s | grep "^\s\{1,\}M" >/dev/null && hook_com[staged]+='M'
 }
 
 zstyle ':vcs_info:*' formats \
