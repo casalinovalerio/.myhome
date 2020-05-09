@@ -182,6 +182,7 @@ my_timer_show() {
     minutes=$(($elapsed/60))
     [ $elapsed -lt 3600 ] && psvar[2]=( "${minutes}m${seconds}s" ) && return 0
     hours=$(($minutes/60))
+    minutes=$(($minutes%60))
     psvar[2]=( "${hours}h${minutes}m${seconds}s" )
 }
 
