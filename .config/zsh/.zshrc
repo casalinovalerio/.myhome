@@ -160,7 +160,7 @@ zstyle ':vcs_info:*' formats \
 prompt() {
     local usr workdir st errcode elapsed
     usr="%(!.%F{9}%n%f.%F{11}%n%f)"
-    workdir="%(1V.${psvar[1]/./}.%F{6}%3~%f)"
+    workdir="%(1V.${psvar[1]//\./}.%F{6}%3~%f)"
     st="%(?.%F{2}>>%f.%F{9}>>%f)"
     errcode="%(?..%F{9}%?%f)"
     elapsed="%(2V. took %F{13}${psvar[2]}%f.)"
