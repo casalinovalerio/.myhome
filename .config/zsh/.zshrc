@@ -122,8 +122,8 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 ### Source plugins
 ##################
-source "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-source "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 ### Prompt configuration
 ########################
