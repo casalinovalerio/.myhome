@@ -99,10 +99,12 @@ set expandtab
 set mouse=r
 
 " Highligh current line
+colorscheme onedark
+
 set cursorline
-highlight  CursorLine ctermbg=236 ctermfg=None
-autocmd InsertEnter * highlight  CursorLine ctermbg=None ctermfg=None
-autocmd InsertLeave * highlight  CursorLine ctermbg=DarkGray ctermfg=None
+"highlight  CursorLine ctermbg=236 ctermfg=None
+"autocmd InsertEnter * highlight  CursorLine ctermbg=None ctermfg=None
+"autocmd InsertLeave * highlight  CursorLine ctermbg=DarkGray ctermfg=None
 
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
