@@ -106,5 +106,5 @@ set cursorline
 "autocmd InsertEnter * highlight  CursorLine ctermbg=None ctermfg=None
 "autocmd InsertLeave * highlight  CursorLine ctermbg=DarkGray ctermfg=None
 
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+highlight OverLength ctermbg=236 ctermfg=None guibg=#592929
 match OverLength /\%81v.\+/
