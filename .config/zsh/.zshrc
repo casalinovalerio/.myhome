@@ -34,13 +34,13 @@ done
 
 ### set common functions
 ########################
-function url_encode() {
-    # Works only with python3
-    python3 -c \
-        "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"
-}
+function url_encode() { python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"; }
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
 function makezip() { zip -r "${1%%/}.zip" "$1" ; }
+function zsh-toogle-gitremote() {
+    [ -z $_ZSHRCGITREMOTE ] && export _ZSHRCGITREMOTE=off && return 0
+    [ $_ZSHRCGITREMOTE = off ] && export _ZSHRCGITREMOTE=on || export _ZSHRCGITREMOTE=off
+}
 
 ### Set alias
 #############
@@ -48,7 +48,6 @@ alias cls="clear"
 alias ..="cd .."
 alias cd..="cd .."
 alias ll="ls -lisa --color=auto"
-alias dfd="df -h /dev/nvme0n1p2 --output=source,fstype,size,used,avail,pcent"
 alias ls="ls -CF --color=auto"
 alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias grep='grep --color=auto'
@@ -66,31 +65,28 @@ alias myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME"
 autoload -U compinit
 compinit
 bindkey -e
-bindkey "^?" backward-delete-char
-bindkey "\e[3~" delete-char
+bindkey "^?"      backward-delete-char
+bindkey "\e[3~"   delete-char
 bindkey "\e[1;5D" backward-word
 bindkey "\e[1;5C" forward-word
-bindkey '^[OH' beginning-of-line
-bindkey '^[OF' end-of-line
-bindkey '^[[5~' up-line-or-history
-bindkey '^[[6~' down-line-or-history
-bindkey "^[[A" history-beginning-search-backward-end
-bindkey "^[[B" history-beginning-search-forward-end
-bindkey "^r" history-incremental-search-backward
-bindkey ' ' magic-space    # also do history expansion on space
-bindkey '^I' complete-word # complete on tab, leave expansion to _expand
+bindkey '^[OH'    beginning-of-line
+bindkey '^[OF'    end-of-line
+bindkey '^[[5~'   up-line-or-history
+bindkey '^[[6~'   down-line-or-history
+bindkey "^[[A"    history-beginning-search-backward-end
+bindkey "^[[B"    history-beginning-search-forward-end
+bindkey "^r"      history-incremental-search-backward
+bindkey ' '       magic-space    
+bindkey '^I'      complete-word 
 
 ### Completion Settings
 #######################
 zstyle ':completion::complete:*' use-cache on
 zstyle ':completion::complete:*' cache-path "$CONFIG_DIR/cache/$HOST"
-zstyle ':completion:*' list-prompt \
-    '%SAt %p: Hit TAB for more, or the character to insert%s'
+zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
 zstyle ':completion:*' menu select=1 _complete _ignored _approximate
-zstyle -e ':completion:*:approximate:*' max-errors \
-    'reply=( $(( ($#PREFIX+$#SUFFIX)/2 )) numeric )'
-zstyle ':completion:*' select-prompt \
-    '%SScrolling active: current selection at %p%s'
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/2 )) numeric )'
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
 
 ### Completion Styles
 #####################
@@ -133,29 +129,37 @@ setopt prompt_subst
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' stagedstr '!'
 zstyle ':vcs_info:git*+set-message:*' hooks git-st git-untracked git-modified
+zstyle ':vcs_info:*' formats '%F{5}%r/%S%f %F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%c%m%f '
 
 function +vi-git-st() {
+    { [ -z $_ZSHRCGITREMOTE] || [ $_ZSHRCGITREMOTE = "off" ]; } && return 0
     local ahead behind
     local -a gitstatus
-    ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null \
-        | wc -l)
+    ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
     (( $ahead )) && gitstatus+=( "+${ahead}" )
-    behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null \
-        | wc -l)
+    behind=$(git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
     (( $behind )) && gitstatus+=( "-${behind}" )
     hook_com[misc]+="${(j:/:)gitstatus}"
 }
 
-function +vi-git-untracked() { 
-    git status -s | grep '^??' >/dev/null && hook_com[staged]+='?'
+my_vcs_info() { vcs_info && psvar[1]=( "$vcs_info_msg_0_" ) }
+my_timer_start() { timer_start=$( date +%s ); }
+my_timer_show() { 
+    local elapsed hours minutes seconds
+    psvar[2]=( "" )
+    [ -n $timer_start ] && elapsed=$(( $(date +%s) - ${timer_start:-$( date +%s )} )) || return 0
+    [ $elapsed -lt 3 ] && return 0
+    [ $elapsed -lt 60 ] && psvar[2]=( "${elapsed}s") && return 0
+    seconds=$(($elapsed%60))
+    minutes=$(($elapsed/60))
+    [ $elapsed -lt 3600 ] && psvar[2]=( "${minutes}m${seconds}s" ) && return 0
+    hours=$(($minutes/60))
+    minutes=$(($minutes%60))
+    psvar[2]=( "${hours}h${minutes}m${seconds}s" )
 }
 
-function +vi-git-modified() {
-    git status -s | grep "^\s\{1,\}M" >/dev/null && hook_com[staged]+='M'
-}
-
-zstyle ':vcs_info:*' formats \
-    '%F{5}%r/%S%f %F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%c%m%f '
+function +vi-git-untracked() { git status -s | grep '^??' >/dev/null && hook_com[staged]+='?'; }
+function +vi-git-modified() { git status -s | grep "^\s\{1,\}M" >/dev/null && hook_com[staged]+='M'; }
 
 prompt() {
     local usr workdir st errcode elapsed
@@ -168,24 +172,7 @@ prompt() {
     RPROMPT="$errcode"
 }
 
-my_vcs_info() { vcs_info && psvar[1]=( "$vcs_info_msg_0_" ) }
-my_timer_start() { timer_start=$( date +%s ); }
-my_timer_show() { 
-    local elapsed hours minutes seconds
-    psvar[2]=( "" )
-    [ -n $timer_start ] \
-		&& elapsed=$(( $(date +%s) - ${timer_start:-$( date +%s )} )) \
-		|| return 0
-    [ $elapsed -lt 3 ] && return 0
-    [ $elapsed -lt 60 ] && psvar[2]=( "${elapsed}s") && return 0
-    seconds=$(($elapsed%60))
-    minutes=$(($elapsed/60))
-    [ $elapsed -lt 3600 ] && psvar[2]=( "${minutes}m${seconds}s" ) && return 0
-    hours=$(($minutes/60))
-    minutes=$(($minutes%60))
-    psvar[2]=( "${hours}h${minutes}m${seconds}s" )
-}
-
+# Preexec and precmd functions added
 preexec_functions+=( my_timer_start )
 precmd_functions+=( my_vcs_info )
 precmd_functions+=( my_timer_show )
