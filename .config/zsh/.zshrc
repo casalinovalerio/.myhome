@@ -132,7 +132,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-untracked git-modified
 zstyle ':vcs_info:*' formats '%F{5}%r/%S%f %F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%c%m%f '
 
 function +vi-git-st() {
-    { [ -z $_ZSHRCGITREMOTE] || [ $_ZSHRCGITREMOTE = "off" ]; } && return 0
+    { [ -z "$_ZSHRCGITREMOTE" ] || [ "$_ZSHRCGITREMOTE" = "off" ]; } && return 0
     local ahead behind
     local -a gitstatus
     ahead=$(git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
@@ -168,6 +168,7 @@ prompt() {
     st="%(?.%F{2}>>%f.%F{9}>>%f)"
     errcode="%(?..%F{9}%?%f)"
     elapsed="%(2V. took %F{13}${psvar[2]}%f.)"
+
     PROMPT="$usr in ${workdir}${elapsed} $st "
     RPROMPT="$errcode"
 }
