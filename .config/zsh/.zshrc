@@ -28,8 +28,9 @@ PATH="/usr/local/bin:/usr/local/sbin/:$PATH"
 
 ### Source plugins
 ##################
-source "$HOME/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-source "$HOME/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$CONFIG_DIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "$CONFIG_DIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$CONFIG_DIR/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
 
 ### Completion Settings
 #######################
@@ -62,10 +63,8 @@ bindkey '^[[F'    end-of-line
 bindkey "^?"      backward-delete-char 
 bindkey "\e[3~"   delete-char
 bindkey '^[[2~'   overwrite-mode
-bindkey "^[[A"    history-beginning-search-backward
-bindkey "^[[B"    history-beginning-search-forward
-bindkey '^[[5~'   up-line-or-history
-bindkey '^[[6~'   down-line-or-history
+bindkey '^[[5~'   history-beginning-search-backward
+bindkey '^[[6~'   history-beginning-search-forward
 # Other functionalities
 bindkey "\e[1;5D" backward-word                        
 bindkey "\e[1;5C" forward-word
@@ -73,6 +72,12 @@ bindkey '^H'      backward-kill-word # ctrl+backspace to kill word
 bindkey '^[[Z'    undo # Shift+tab to undo
 bindkey ' '       magic-space    
 bindkey '^I'      complete-word 
+# History substring search
+zmodload zsh/terminfo
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey '^[[A' history-substring-search-up                      
+bindkey '^[[B' history-substring-search-down
 
 ### Set alias
 #############
