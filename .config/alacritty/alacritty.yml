@@ -19,14 +19,11 @@ scrolling:
 font:
         normal:
                 family: Inconsolata for Powerline
-                #family: Source Code Pro for Powerline 
         bold:
                 family: Inconsolata for Powerline
-                #family: Source Code Pro for Powerline
         italic:
                 family: Inconsolata for Powerline
-                #family: Source Code Pro for Powerline
-        size: 12
+        size: 14
 
 draw_bold_text_with_bright_colors: true
 
