@@ -91,9 +91,16 @@ alias myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME"
 
 ### Set functions
 ########################
-function url_encode() { python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"; }
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
 function makezip() { zip -r "${1%%/}.zip" "$1" ; }
+function setgovernor() {
+  [ -z "$1" ] && return 1
+  [ "$1" != "conservative" ] && [ "$1" != "performance" ] && return 1 
+  echo "$1" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+}
+function url_encode() { 
+  python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"
+}
 
 ### Theming
 ###########
