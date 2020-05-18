@@ -13,16 +13,22 @@ window:
         startup_mode: Windowed
 
 scrolling:
-        history: 500
+        history: 20000
         multiplier: 3
 
 font:
         normal:
-                family: Inconsolata for Powerline
+                family: Hack
+                style: Regular
         bold:
-                family: Inconsolata for Powerline
+                family: Hack
+                style: Bold
         italic:
-                family: Inconsolata for Powerline
+                family: Hack
+                style: Italic
+        bold_italic:
+                family: Hack
+                style: Bold Italic
         size: 14
 
 draw_bold_text_with_bright_colors: true

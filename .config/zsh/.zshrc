@@ -1,5 +1,3 @@
-export TERM="xterm-256color"
-
 # More info: http://zsh.sourceforge.net/Doc/Release/Options.html
 setopt menu_complete     # When ambiguous completion fill 1st match, then others
 setopt histignorealldups # Don't save duplicates in history
