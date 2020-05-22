@@ -16,6 +16,7 @@ ZSH_CUSTOM_COMPLETION_PATH="$CONFIG_DIR/completion"
 HISTFILE="$CONFIG_DIR/.zhistory"
 HISTSIZE=500
 SAVEHIST=500
+_MY_TIMER_THRESHOLD=5
 
 [ -d "$ZSH_CUSTOM_COMPLETION_PATH" ] && fpath+="$ZSH_CUSTOM_COMPLETION_PATH"
 
@@ -148,31 +149,32 @@ function git_prompt_string() {
     psvar[1]="%{$fg[cyan]%}%3~%{$reset_color%}"
 }
 
-function my_timer_start() { timer_start=$( date +%s ); }
-function my_timer_show() { 
-    local elapsed hours minutes seconds
+function my_timer_start() { export SECONDS=0 }
+function my_timer_show() {  
     local prefix=" took %{$fg[magenta]%}"
     local suffix="%{$reset_color%}"
     psvar[2]=( "" )
-    [ -n $timer_start ] && elapsed=$(( $(date +%s) - ${timer_start:-$( date +%s )} )) || return 0
-    [ $elapsed -lt 3 ] && return 0
-    [ $elapsed -lt 60 ] && psvar[2]=( "${prefix}${elapsed}s${suffix}") && return 0
-    seconds=$(($elapsed%60))
-    minutes=$(($elapsed/60))
-    [ $elapsed -lt 3600 ] && psvar[2]=( "${prefix}${minutes}m${seconds}s${suffix}" ) && return 0
-    hours=$(($minutes/60))
-    minutes=$(($minutes%60))
-    psvar[2]=( "${prefix}${hours}h${minutes}m${seconds}s${suffix}" )
+    [ $SECONDS -lt $_MY_TIMER_THRESHOLD ] && return 0
+    
+    if [ $SECONDS -lt 60 ];then
+        psvar[2]=( "${prefix}${SECONDS}s${suffix}")
+        return 0
+    fi
+    if [ $SECONDS -lt 3600 ]; then
+        psvar[2]=( "${prefix}$(date -d @$SECONDS -u +%Mm%Ss)${suffix}" )
+        return 0
+    fi
+    psvar[2]=( "${prefix}$(date -d @$SECONDS -u +%Hh%Mm%Ss)${suffix}" )
 }
 
 function prompt() {
     local usr="%(!.%{$fg[red]%}%n.%{$fg[yellow]%}%n)%{$reset_color%}"
     local st="%(?.%{$fg[green]%}>>.%{$fg[red]%}>>)%{$reset_color%}"
+    git_prompt_string
+    my_timer_show
     PROMPT="$usr in ${psvar[1]}${psvar[2]} $st "
 }
 RPROMPT="%(?..%{$fg[red]%}%?)%{$reset_color%}"
 
 preexec_functions+=( my_timer_start )
-precmd_functions+=( git_prompt_string )
-precmd_functions+=( my_timer_show )
 precmd_functions+=( prompt )
