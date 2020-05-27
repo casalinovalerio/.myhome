@@ -135,7 +135,7 @@ function parse_git_state() {
     [ -n $GIT_STATE ] && echo "$GIT_PROMPT_PREFIX$GIT_STATE$GIT_PROMPT_SUFFIX"
 }
 
-function git_prompt_string() {
+function _pwd_prompt_string() {
     local git_where="$( ( git symbolic-ref -q HEAD || git name-rev --name-only --no-undefined --always HEAD ) 2>/dev/null)"
     if [ -n "$git_where" ]; then
         git_where="%{$fg[yellow]%}${git_where#(refs/heads/|tags/)}"
@@ -170,11 +170,11 @@ function my_timer_show() {
 function prompt() {
     local usr="%(!.%{$fg[red]%}%n.%{$fg[yellow]%}%n)%{$reset_color%}"
     local st="%(?.%{$fg[green]%}>>.%{$fg[red]%}>>)%{$reset_color%}"
-    git_prompt_string
     [ -n "${psvar[3]}" ] && my_timer_show
     PROMPT="$usr in ${psvar[1]}${psvar[2]} $st "
 }
 RPROMPT="%(?..%{$fg[red]%}%?)%{$reset_color%}"
 
+chpwd_functions+=( _pwd_prompt_string )
 preexec_functions+=( my_timer_start )
 precmd_functions+=( prompt )
