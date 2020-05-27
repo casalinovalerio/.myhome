@@ -149,7 +149,7 @@ function git_prompt_string() {
     psvar[1]="%{$fg[cyan]%}%3~%{$reset_color%}"
 }
 
-function my_timer_start() { export SECONDS=0 }
+function my_timer_start() { export SECONDS=0; psvar[3]="$1"; }
 function my_timer_show() {  
     local prefix=" took %{$fg[magenta]%}"
     local suffix="%{$reset_color%}"
@@ -171,7 +171,7 @@ function prompt() {
     local usr="%(!.%{$fg[red]%}%n.%{$fg[yellow]%}%n)%{$reset_color%}"
     local st="%(?.%{$fg[green]%}>>.%{$fg[red]%}>>)%{$reset_color%}"
     git_prompt_string
-    my_timer_show
+    [ -n "${psvar[3]}" ] && my_timer_show
     PROMPT="$usr in ${psvar[1]}${psvar[2]} $st "
 }
 RPROMPT="%(?..%{$fg[red]%}%?)%{$reset_color%}"
