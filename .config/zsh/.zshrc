@@ -102,6 +102,15 @@ function setgovernor() {
 function url_encode() { 
   python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"
 }
+function myhome_submodules_update() {
+  local _list=$( grep "path" "$HOME/.gitmodules" | cut -d"=" -f2 | tr -d ' ' )
+  while IFS= read -r _path; do
+    git --git-dir="${HOME}/${_path}/.git" pull origin master; 
+  done <<< "$_list"
+  git --git-dir="$HOME/.myhome/" --work-tree="$HOME" add $( tr '\n' ' ' <<< "$_list" )
+  git --git-dir="$HOME/.myhome/" --work-tree="$HOME" commit -m "Updated submod"
+  git --git-dir="$HOME/.myhome/" --work-tree="$HOME" push origin master
+}
 
 ### Theming
 ###########
