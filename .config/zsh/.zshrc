@@ -114,10 +114,11 @@ function myhome_submodules_update() {
 
 ### Theming
 ###########
-autoload -U compinit colors zcalc
+autoload -Uz compinit colors zcalc add-zsh-hook vcs_info
 compinit -d
 colors
 setopt prompt_subst
+zstyle ":vcs_info:git:*" formats "%{$fg[magenta]%}%r/%S (%{$fg_bold[yellow]%}%b%{$fg[magenta]%})%{$reset_color%}"
 
 # Git status
 GIT_PROMPT_PREFIX="%{$fg[magenta]%}[%{$reset_color%}"       # prefix
@@ -144,46 +145,30 @@ function parse_git_state() {
     [ -n $GIT_STATE ] && echo "$GIT_PROMPT_PREFIX$GIT_STATE$GIT_PROMPT_SUFFIX"
 }
 
-function _pwd_prompt_string() {
-    local git_where="$( ( git symbolic-ref -q HEAD || git name-rev --name-only --no-undefined --always HEAD ) 2>/dev/null)"
-    if [ -n "$git_where" ]; then
-        git_where="%{$fg[yellow]%}${git_where#(refs/heads/|tags/)}"
-        local toplevel="$(git rev-parse --show-toplevel | xargs basename)"
-        local relative="$(git rev-parse --show-prefix)"
-        local relative_path="%{$fg[magenta]%}$toplevel/$relative"
-        local git_prompt="$GIT_PROMPT_PREFIX$git_where$GIT_PROMPT_SUFFIX"
-        psvar[1]="$relative_path $(parse_git_state)$git_prompt" 
-        return 0
-    fi
-    psvar[1]="%{$fg[cyan]%}%3~%{$reset_color%}"
+function _v2() {
+    vcs_info
+    [ -n "$vcs_info_msg_0_" ] && psvar[2]="${vcs_info_msg_0_}$(parse_git_state)" && return 0
+    psvar[2]="%{$fg[cyan]%}%3~%{$reset_color%}"
 }
 
-function my_timer_start() { export SECONDS=0; psvar[3]="$1"; }
-function my_timer_show() {  
-    local prefix=" took %{$fg[magenta]%}"
-    local suffix="%{$reset_color%}"
-    psvar[2]=( "" )
-    [ $SECONDS -lt $_MY_TIMER_THRESHOLD ] && return 0
-    
-    if [ $SECONDS -lt 60 ];then
-        psvar[2]=( "${prefix}${SECONDS}s${suffix}")
-        return 0
-    fi
-    if [ $SECONDS -lt 3600 ]; then
-        psvar[2]=( "${prefix}$(date -d @$SECONDS -u +%Mm%Ss)${suffix}" )
-        return 0
-    fi
-    psvar[2]=( "${prefix}$(date -d @$SECONDS -u +%Hh%Mm%Ss)${suffix}" )
+function _timer_start() { _timer="$SECONDS"; }
+function _v3() { 
+    psvar[3]=""
+    [ -z "$_timer" ] && return 0
+    local _elapsed="$((SECONDS - _timer))"
+    [ "$_elapsed" -lt "$_MY_TIMER_THRESHOLD" ] && psvar[3]="" && return 0
+    psvar[3]="took %{$fg[magenta]%}$(date -d @$_elapsed -u +%Hh%Mm%Ss)%{$reset_color%}"
+    unset _timer
 }
 
-function prompt() {
-    local usr="%(!.%{$fg[red]%}%n.%{$fg[yellow]%}%n)%{$reset_color%}"
-    local st="%(?.%{$fg[green]%}>>.%{$fg[red]%}>>)%{$reset_color%}"
-    [ -n "${psvar[3]}" ] && my_timer_show
-    PROMPT="$usr in ${psvar[1]}${psvar[2]} $st "
-}
+psvar[1]="%(!.%{$fg[red]%}%n.%{$fg[yellow]%}%n)%{$reset_color%} in"
+psvar[2]="%{$fg[cyan]%}%3~%{$reset_color%}"
+psvar[3]=""
+psvar[4]="%(?.%{$fg[green]%}>>.%{$fg[red]%}>>)%{$reset_color%} "
+
+add-zsh-hook precmd _v2
+add-zsh-hook preexec _timer_start
+add-zsh-hook precmd _v3
+
+PROMPT="\${psvar[@]}"
 RPROMPT="%(?..%{$fg[red]%}%?)%{$reset_color%}"
-
-chpwd_functions+=( _pwd_prompt_string )
-preexec_functions+=( my_timer_start )
-precmd_functions+=( prompt )
