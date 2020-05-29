@@ -170,5 +170,5 @@ add-zsh-hook precmd _v2
 add-zsh-hook preexec _timer_start
 add-zsh-hook precmd _v3
 
-PROMPT="\${psvar[@]}"
+PROMPT="\${\${psvar[@]}//  / }"
 RPROMPT="%(?..%{$fg[red]%}%?)%{$reset_color%}"
