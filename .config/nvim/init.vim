@@ -108,3 +108,16 @@ set cursorline
 
 highlight OverLength ctermbg=238 ctermfg=None guibg=#592929
 match OverLength /\%81v.\+/
+
+" Compile the file
+" R markdown
+autocmd Filetype rmd map <F6> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
+" pdflatex
+autocmd Filetype tex map <F6> :!dtexlive<space>pdflatex<space>'<c-r>%'<enter>
+autocmd Filetype tex map <F7> :!pdflatex<space>'<c-r>%'<enter>
+" Shell scripts
+autocmd Filetype sh map <F6> :!sh<space>'<c-r>%'<enter>
+autocmd Filetype sh map <F7> :!sh<space>-n<space>'<c-r>%'<enter>
+autocmd Filetype sh map <F8> :!chmod<space>+x<space>'<c-r>%'<enter>:e<enter> 
+
+
