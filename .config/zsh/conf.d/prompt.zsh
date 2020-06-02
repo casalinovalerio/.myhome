@@ -56,4 +56,4 @@ add-zsh-hook preexec _timer_start
 add-zsh-hook precmd _v3
 
 PROMPT="\${\${psvar[@]}//  / }"
-RPROMPT="%(?..%{$fg[red]%}%?)%{$reset_color%}"
+RPROMPT="%(?..%{$fg[red]%}[%?])%{$reset_color%}"

@@ -35,4 +35,6 @@ source "$ZDOTDIR/conf.d/aliases.zsh"
 source "$ZDOTDIR/conf.d/functions.zsh"
 ### Prompt
 ###########
-source "$ZDOTDIR/conf.d/prompt.zsh"
+_ZPROMPTMODE="minimal"
+[ "$_ZPROMPTMODE" = "full" ] && source "$ZDOTDIR/conf.d/prompt.zsh"
+[ "$_ZPROMPTMODE" = "minimal" ] && source "$ZDOTDIR/conf.d/prompt-minimal.zsh"
