@@ -1,12 +1,8 @@
-# More info: http://zsh.sourceforge.net/Doc/Release/Options.html
-setopt menu_complete     # When ambiguous completion fill 1st match, then others
-setopt histignorealldups # Don't save duplicates in history
-setopt autocd            # Type a dir and cd is automatically added 
-setopt autopushd         # cd automatically push
-setopt recexact          # If string matches one completion, it is accepted
-setopt nobgnice          # Background jobs not limited at lower priority
-setopt longlistjobs      # Job notifications in long format
-setopt appendhistory     # Append history instead of overwriting
+### Set options
+### http://zsh.sourceforge.net/Doc/Release/Options.html
+############### 
+setopt menu_complete histignorealldups autocd autopushd recexact nobgnice 
+setopt longlistjobs appendhistory prompt_subst
 ### Set variables
 #################
 HISTFILE="$ZCACHEDIR/.zhistory"
@@ -22,17 +18,95 @@ source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source "$ZDOTDIR/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
 ### Completion Settings
-#######################
-source "$ZDOTDIR/conf.d/completion.zsh"
+### http://zsh.sourceforge.net/Doc/Release/Completion-System.html
+####################### 
+zstyle ':completion:*' accept-exact '*(N)'
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "$CACHE_DIR/$HOST"
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select=1 _complete _ignored _approximate
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 ### Bind keys
+### http://zsh.sourceforge.net/Doc/Release/Completion-System.html
 #############
-source "$ZDOTDIR/conf.d/bindings.zsh"
+zmodload zsh/terminfo
+bindkey -e
+bindkey '^[[7~'   beginning-of-line
+bindkey '^[[H'    beginning-of-line
+bindkey '^[[8~'   end-of-line
+bindkey '^[[F'    end-of-line
+bindkey "^?"      backward-delete-char
+bindkey "\e[3~"   delete-char
+bindkey '^[[2~'   overwrite-mode
+bindkey '^[[5~'   history-beginning-search-backward
+bindkey '^[[6~'   history-beginning-search-forward
+bindkey "\e[1;5D" backward-word
+bindkey "\e[1;5C" forward-word
+bindkey '^H'      backward-kill-word 
+bindkey '^[[Z'    undo 
+bindkey ' '       magic-space
+bindkey '^I'      complete-word
+bindkey '^[[A'    history-substring-search-up
+bindkey '^[[B'    history-substring-search-down
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
 ### Set alias
 #############
-source "$ZDOTDIR/conf.d/aliases.zsh"
+alias cls="clear" ..="cd .." cd..="cd .." ll="ls -lisa --color=auto" \
+ls="ls -CF --color=auto" psgrep="ps aux | grep -v grep | grep -i -e VSZ -e" \
+grep='grep --color=auto' open="xdg-open" \
+myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME"
 ### Set functions
 ########################
-source "$ZDOTDIR/conf.d/functions.zsh"
+function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
+function makezip() { zip -r "${1%%/}.zip" "$1" ; }
+function setgovernor() {
+  [ -z "$1" ] && return 1
+  [ "$1" != "conservative" ] && [ "$1" != "performance" ] && return 1
+  echo "$1" | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+}
+function url_encode() {
+  python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"
+}
+function myhome_submodules_update() {
+  local _list=$( grep "path" "$HOME/.gitmodules" | cut -d"=" -f2 | tr -d ' ' )
+  local _myhome="$HOME/.myhome/"
+  while IFS= read -r _path; do
+    git --git-dir="${HOME}/${_path}/.git" pull origin master;
+  done <<< "$_list"
+  git --git-dir="$_myhome" --work-tree="$HOME" add $( tr '\n' ' ' <<< "$_list" )
+  git --git-dir="$_myhome" --work-tree="$HOME" commit -m "Updated submod"
+  git --git-dir="$_myhome" --work-tree="$HOME" push origin master
+}
+function _git_prompt() {
+    local _out=""
+    local N_A="$(git log --oneline @{u}.. 2> /dev/null | wc -l | tr -d ' ')"
+    local N_B="$(git log --oneline ..@{u} 2> /dev/null | wc -l | tr -d ' ')"
+    local G_U="$(git ls-files --other --exclude-standard 2> /dev/null)"
+    [ "$N_A" -gt 0 ] && _out="${_out}%{$fg[green]%}+${N_A}"
+    [ "$N_B" -gt 0 ] && _out="${_out}%{$fg[green]%}-${N_B}"
+    [ "$G_U" != "" ] && _out="${_out}%{$fg_bold[red]%}?"
+    git diff --quiet 2> /dev/null || _out="${_out}%{$fg_bold[yellow]%}M"
+    git diff --cached --quiet 2>/dev/null || _out="${_out}%{$fg_bold[yellow]%}!"
+    [ -n $_out ] && echo "%{$fg[magenta]%}[${_out}%{$fg[magenta]%}]"
+}
+function _pwd_prompt() {
+    vcs_info
+    [ -n "$vcs_info_msg_0_" ] && echo -n "${vcs_info_msg_0_/\/. / }$(_git_prompt) " || echo -n "%{$fg[cyan]%}%3~ "
+}
+function _vpn_prompt() {
+    ip a | grep -e "inet.*tun" | sed "s/.*inet //g;s/\/[0-9]\{1,2\}.*//g" \
+    | xargs -I '{}' echo "%{$fg[yellow]%}[{}] " || return 0
+}
 ### Prompt
 ###########
-source "$ZDOTDIR/conf.d/prompt.zsh"
+autoload -Uz compinit colors vcs_info && compinit -d && colors
+zstyle ":vcs_info:git:*" formats "%{$fg[magenta]%}%r/%S (%{$fg_bold[yellow]%}%b%{$fg[magenta]%})"
+_isroot="%(!.%{$fg[magenta]%}>.%{$fg[yellow]%}>)"
+_status="%(?.%{$fg[green]%}>>.%{$fg[red]%}>>) "
+PROMPT="\$(_pwd_prompt)\$(_vpn_prompt)${_is_root}${_status}%{$reset_color%}"
+RPROMPT="%(?..%{$fg[red]%}[%?])%{$reset_color%}"
