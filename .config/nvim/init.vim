@@ -19,12 +19,6 @@ syntax on
 " swap files will keep you safe if your computer crashes.
 set hidden
  
-" Note that not everyone likes working this way (with the hidden option).
-" Alternatives include using tabs or split windows instead of re-using the same
-" window as mentioned above, and/or either of the following options:
-" set confirm
-" set autowriteall
- 
 " Better command-line completion
 set wildmenu
  
@@ -88,7 +82,7 @@ set t_vb=
 set mouse=r
  
 " Display line numbers on the left
-" set number
+set number
 
 " Use 4 spaces instead of tabs
 set shiftwidth=4
@@ -98,26 +92,36 @@ set expandtab
 " No visual mode when selecting with cursor
 set mouse=r
 
+" Set python providers
+let g:python3_host_prog = '/usr/bin/python3'
+let g:python2_host_prog = '/usr/bin/python2'
+
+" Use clipboard as default register
+if has('unnamedplus')
+  set clipboard=unnamed,unnamedplus
+endif
+
 " Highligh current line
 colorscheme onedark
 
 set cursorline
-"highlight  CursorLine ctermbg=236 ctermfg=None
-"autocmd InsertEnter * highlight  CursorLine ctermbg=None ctermfg=None
-"autocmd InsertLeave * highlight  CursorLine ctermbg=DarkGray ctermfg=None
+set cc=81
 
-highlight OverLength ctermbg=238 ctermfg=None guibg=#592929
-match OverLength /\%81v.\+/
+" File specific commands
+    " R markdown
+    autocmd Filetype rmd map <F6> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
+    autocmd Filetype rmd vmap <C-b> :s/\%V.*\%V./**&**/<enter>
+    autocmd Filetype rmd vmap <C-i> :s/\%V.*\%V./_&_/<enter>
+    
+    " pdflatex
+    autocmd Filetype tex map <F6> :!dtexlive<space>pdflatex<space>'<c-r>%'<enter>
+    autocmd Filetype tex map <F7> :!pdflatex<space>'<c-r>%'<enter>
+    autocmd Filetype tex vmap <C-b> :s/\%V.*\%V./\\textbf{&}/<enter>
+    autocmd Filetype tex vmap <C-i> :s/\%V.*\%V./\\textit{&}/<enter>
 
-" Compile the file
-" R markdown
-autocmd Filetype rmd map <F6> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
-" pdflatex
-autocmd Filetype tex map <F6> :!dtexlive<space>pdflatex<space>'<c-r>%'<enter>
-autocmd Filetype tex map <F7> :!pdflatex<space>'<c-r>%'<enter>
-" Shell scripts
-autocmd Filetype sh map <F6> :!sh<space>'<c-r>%'<enter>
-autocmd Filetype sh map <F7> :!sh<space>-n<space>'<c-r>%'<enter>
-autocmd Filetype sh map <F8> :!chmod<space>+x<space>'<c-r>%'<enter>:e<enter> 
+    " Shell scripts
+    autocmd Filetype sh map <F6> :!sh<space>'<c-r>%'<enter>
+    autocmd Filetype sh map <F7> :!sh<space>-n<space>'<c-r>%'<enter>
+    autocmd Filetype sh map <F8> :!chmod<space>+x<space>'<c-r>%'<enter>:e<enter> 
 
 
