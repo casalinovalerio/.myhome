@@ -96,11 +96,6 @@ set mouse=r
 let g:python3_host_prog = '/usr/bin/python3'
 let g:python2_host_prog = '/usr/bin/python2'
 
-" Use clipboard as default register
-if has('unnamedplus')
-  set clipboard=unnamed,unnamedplus
-endif
-
 " Highligh current line
 colorscheme onedark
 
