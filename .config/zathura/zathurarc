@@ -1,0 +1,7 @@
+map i recolor
+map r reload
+map R rotate
+
+set selection-clipboard clipboard
+set scroll-hstep 3
+set statusbar-basename true
