@@ -108,5 +108,5 @@ autoload -Uz compinit colors vcs_info && compinit -d && colors
 zstyle ":vcs_info:git:*" formats "%{$fg[magenta]%}%r/%S (%{$fg_bold[yellow]%}%b%{$fg[magenta]%})"
 _isroot="%(!.%{$fg[magenta]%}>.%{$fg[yellow]%}>)"
 _status="%(?.%{$fg[green]%}>>.%{$fg[red]%}>>) "
-PROMPT="\$(_pwd_prompt)\$(_vpn_prompt)${_is_root}${_status}%{$reset_color%}"
+PROMPT="\$(_pwd_prompt)\$(_vpn_prompt)${_isroot}${_status}%{$reset_color%}"
 RPROMPT="%(?..%{$fg[red]%}[%?])%{$reset_color%}"
