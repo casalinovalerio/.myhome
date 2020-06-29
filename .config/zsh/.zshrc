@@ -9,7 +9,7 @@ HISTFILE="$ZCACHEDIR/.zhistory"
 HISTSIZE=10000
 SAVEHIST=10000
 [ -d "$ZCUSTOMCOMPLETION" ] && fpath+="$ZCUSTOMCOMPLETION"
-[ -d "$HOME/scripts" ] && PATH="$HOME/scripts/sh:$PATH"
+[ -d "$HOME/.scripts" ] && PATH="$HOME/.scripts/sh:$PATH"
 [ -d "/opt/bin" ] && PATH="/opt/bin:$PATH"
 PATH="/usr/local/bin:/usr/local/sbin/:$PATH"
 ### Plugins
