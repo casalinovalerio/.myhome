@@ -103,20 +103,21 @@ set cursorline
 set cc=81
 
 " File specific commands
-    " R markdown
-    autocmd Filetype rmd map <F6> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
-    autocmd Filetype rmd vmap <C-b> :s/\%V.*\%V./**&**/<enter>
-    autocmd Filetype rmd vmap <C-i> :s/\%V.*\%V./_&_/<enter>
+" R markdown
+autocmd Filetype rmd map <F6> :!echo<space>"require(rmarkdown);<space>render('<c-r>%')"<space>\|<space>R<space>--vanilla<enter>
+autocmd Filetype rmd vmap <C-b> :s/\%V.*\%V./**&**/ \| noh<enter>
+autocmd Filetype rmd vmap <C-i> :s/\%V.*\%V./_&_/ \| noh<enter>
     
-    " pdflatex
-    autocmd Filetype tex map <F6> :!dtexlive<space>pdflatex<space>'<c-r>%'<enter>
-    autocmd Filetype tex map <F7> :!pdflatex<space>'<c-r>%'<enter>
-    autocmd Filetype tex vmap <C-b> :s/\%V.*\%V./\\textbf{&}/<enter>
-    autocmd Filetype tex vmap <C-i> :s/\%V.*\%V./\\textit{&}/<enter>
+" pdflatex
+autocmd Filetype tex map <F6> :!dtexlive<space>pdflatex<space>'<c-r>%'<enter>
+autocmd Filetype tex map <F7> :!pdflatex<space>'<c-r>%'<enter>
+autocmd Filetype tex vmap <C-b> :s/\%V.*\%V./\\textbf{&}/ \| noh<enter>
+autocmd Filetype tex vmap <C-i> :s/\%V.*\%V./\\textit{&}/ \| noh<enter>
 
-    " Shell scripts
-    autocmd Filetype sh map <F6> :!sh<space>'<c-r>%'<enter>
-    autocmd Filetype sh map <F7> :!sh<space>-n<space>'<c-r>%'<enter>
-    autocmd Filetype sh map <F8> :!chmod<space>+x<space>'<c-r>%'<enter>:e<enter> 
+" Shell scripts
+autocmd Filetype sh map <F6> :!sh<space>'<c-r>%'<enter>
+autocmd Filetype sh map <F7> :!sh<space>-n<space>'<c-r>%'<enter>
+autocmd Filetype sh map <F8> :!chmod<space>+x<space>'<c-r>%'<enter>:e<enter> 
 
-
+" Markdown
+autocmd Filetype md map <F7> :w! \| !mdpreview '<c-r>%'<enter>
