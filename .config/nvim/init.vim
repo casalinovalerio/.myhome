@@ -100,7 +100,7 @@ let g:python2_host_prog = '/usr/bin/python2'
 colorscheme onedark
 
 set cursorline
-set cc=81
+set cc=80
 
 " File specific commands
 " R markdown
