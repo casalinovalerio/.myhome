@@ -82,3 +82,13 @@ function myhome_submodules_update() {
   git --git-dir="$_myhome" --work-tree="$HOME" commit -m "Updated submod"
   git --git-dir="$_myhome" --work-tree="$HOME" push origin master
 }
+### command-not-found
+#####################
+# Offer to install missing package if command is not found
+if [[ -r /usr/share/zsh/functions/command-not-found.zsh ]]; then
+    source /usr/share/zsh/functions/command-not-found.zsh
+    export PKGFILE_PROMPT_INSTALL_MISSING=1
+fi
+
+
+
