@@ -16,7 +16,7 @@ PATH="/usr/local/bin:/usr/local/sbin/:$PATH"
 source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source "$ZDOTDIR/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
-source "$ZDOTDIR/plugins/minimal-prompt/minimal-prompt.zsh"
+eval "$(starship init zsh)"
 ### Completion Settings
 ### http://zsh.sourceforge.net/Doc/Release/Completion-System.html
 ####################### 
@@ -82,13 +82,3 @@ function myhome_submodules_update() {
   git --git-dir="$_myhome" --work-tree="$HOME" commit -m "Updated submod"
   git --git-dir="$_myhome" --work-tree="$HOME" push origin master
 }
-### command-not-found
-#####################
-# Offer to install missing package if command is not found
-if [[ -r /usr/share/zsh/functions/command-not-found.zsh ]]; then
-    source /usr/share/zsh/functions/command-not-found.zsh
-    export PKGFILE_PROMPT_INSTALL_MISSING=1
-fi
-
-
-
