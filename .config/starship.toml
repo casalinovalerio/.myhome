@@ -29,7 +29,6 @@ disabled = true
 
 [directory]
 style = "cyan"
-truncation_symbol = "../"
 read_only = "()"
 format = "[$path]($style) [$read_only]($read_only_style)"
 
@@ -152,8 +151,11 @@ style_user = "yellow"
 [zig]
 disabled = true
 
-[custom]
-disabled = true
+[custom.vpn]
+command = "vpnips"
+when = "vpnips"
+style = "bold yellow"
+format = '[\[$output\]]($style) '
 
 [purescript]
 disabled = true
