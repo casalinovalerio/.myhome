@@ -11,6 +11,10 @@ SAVEHIST=10000
 [ -d "$ZCUSTOMCOMPLETION" ] && fpath+="$ZCUSTOMCOMPLETION"
 [ -d "$HOME/.scripts" ] && PATH="$HOME/.scripts/sh:$PATH"
 PATH="/usr/local/bin:/usr/local/sbin/:$PATH"
+### Load options
+################
+autoload -Uz compinit colors && compinit -d && colors
+zmodload zsh/terminfo
 ### Plugins
 ##################
 source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
@@ -33,7 +37,6 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 ### Bind keys
 ### http://zsh.sourceforge.net/Doc/Release/Completion-System.html
 #############
-zmodload zsh/terminfo
 bindkey -e
 bindkey '^[[7~'   beginning-of-line
 bindkey '^[[H'    beginning-of-line
