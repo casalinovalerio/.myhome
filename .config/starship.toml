@@ -1,0 +1,160 @@
+scan_timeout = 10
+add_newline = false
+
+[aws]
+disabled = true
+
+[battery]
+disabled = true
+
+[character]
+success_symbol = "[](bold green)"
+error_symbol = "[](bold red)"
+
+[cmake]
+disabled = true
+
+[cmd_duration]
+min_time = 5_000
+format = "[祥$duration](bold yellow) "
+
+[conda]
+disabled = true
+
+[crystal]
+disabled = true
+
+[dart]
+disabled = true
+
+[directory]
+style = "cyan"
+truncation_symbol = "../"
+read_only = "()"
+format = "[$path]($style) [$read_only]($read_only_style)"
+
+[docker_context]
+disabled = true
+
+[dotnet]
+disabled = true
+
+[elixir]
+disabled = true
+
+[elm]
+disabled = true
+
+[env_var]
+disabled = true
+
+[erlang]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[git_branch]
+
+[git_commit]
+
+[git_state]
+
+[git_status]
+
+[golang]
+disabled = true
+
+[helm]
+disabled = true
+
+[hostname]
+disabled = true
+
+[java]
+disabled = true
+
+[jobs]
+disabled = true
+
+[julia]
+disabled = true
+
+[kubernetes]
+disabled = true
+
+[line_break]
+disabled = true
+
+[lua]
+disabled = true
+
+[memory_usage]
+disabled = true
+
+[hg_branch]
+disabled = true
+
+[nim]
+disabled = true
+
+[nix_shell]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[package]
+disabled = true
+
+[ocaml]
+disabled = true
+
+[openstack]
+disabled = true
+
+[perl]
+disabled = true
+
+[php]
+disabled = true
+
+[python]
+disabled = true
+
+[ruby]
+disabled = true
+
+[shlvl]
+disabled = true
+
+[singularity]
+disabled = true
+
+[swift]
+disabled = true
+
+[status]
+style = "red"
+format = '[\[$status\]]($style) '
+disabled = false
+
+[terraform]
+disabled = true
+
+[time]
+disabled = true
+
+[username]
+show_always = true
+style_user = "yellow"
+
+[zig]
+disabled = true
+
+[custom]
+disabled = true
+
+[purescript]
+disabled = true
+
