@@ -20,7 +20,7 @@ zmodload zsh/terminfo
 source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source "$ZDOTDIR/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
-eval "$(starship init zsh)"
+source "$ZDOTDIR/plugins/minimal-prompt/minimal-prompt.zsh"
 ### Completion Settings
 ### http://zsh.sourceforge.net/Doc/Release/Completion-System.html
 ####################### 
@@ -62,7 +62,7 @@ bindkey "$terminfo[kcud1]" history-substring-search-down
 alias cls="clear" ..="cd .." cd..="cd .." ll="ls -lisa --color=auto" \
 ls="ls -CF --color=auto" psgrep="ps aux | grep -v grep | grep -i -e VSZ -e" \
 grep='grep --color=auto' open="xdg-open" \
-myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME"
+myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME" vim=nvim
 ### Set functions
 ########################
 function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
