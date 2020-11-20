@@ -16,3 +16,6 @@
 [submodule ".config/zsh/plugins/minimal-prompt"]
 	path = .config/zsh/plugins/minimal-prompt
 	url = github.com:casalinovalerio/minimal-prompt.git
+[submodule ".config/zsh/plugins/emoji-cli"]
+	path = .config/zsh/plugins/emoji-cli
+	url = https://github.com/b4b4r07/emoji-cli
