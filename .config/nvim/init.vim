@@ -82,7 +82,7 @@ set t_vb=
 set mouse=r
  
 " Display line numbers on the left
-set number
+set relativenumber
 
 " Use 4 spaces instead of tabs
 set shiftwidth=4
