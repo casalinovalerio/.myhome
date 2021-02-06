@@ -85,3 +85,6 @@ function myhome_submodules_update() {
   git --git-dir="$_myhome" --work-tree="$HOME" commit -m "Updated submod"
   git --git-dir="$_myhome" --work-tree="$HOME" push origin master
 }
+function rfc() {
+    curl -s --fail "https://tools.ietf.org/rfc/rfc${1}.txt" | less
+}

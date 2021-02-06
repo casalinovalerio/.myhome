@@ -6,7 +6,7 @@ XDG_CACHE_HOME="$HOME/.cache"
 ### Default programs
 export EDITOR="nvim"
 export TERMINAL="alacritty"
-export BROWSER="chromium"
+export BROWSER="brave"
 export READER="zathura"
 
 ### Stay away from my home
@@ -17,3 +17,13 @@ export LESSHISTFILE="$XDG_CACHE_HOME/less/histfile"
 ### zsh variables
 export ZCACHEDIR="$XDG_CACHE_HOME/zsh"
 export ZCUSTOMCOMPLETION="$ZDOTDIR/completion"
+
+### If on wayland, and with alacritty, we need more. The second check is to
+### determine if we are on wayland with loginctl
+if [ -z "$WAYLAND_DISPLAY" ]; then
+    if loginctl | grep "$USER" | tr -s ' ' | cut -d ' ' -f 2 \
+    | xargs -I '{}' loginctl show-session '{}' -p Type | cut -d '=' -f 2 \
+    | xargs -I '{}' test "wayland" = '{}'; then        
+        TERMINAL="env WAYLAND_DISPLAY= $TERMINAL"
+    fi
+fi
