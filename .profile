@@ -16,6 +16,7 @@ export LESSHISTFILE="$XDG_CACHE_HOME/less/histfile"
 
 ### zsh variables
 export ZCACHEDIR="$XDG_CACHE_HOME/zsh"
+export ZPLUGINDIR="/usr/share/zsh/plugins"
 export ZCUSTOMCOMPLETION="$ZDOTDIR/completion"
 
 ### If on wayland, and with alacritty, we need more. The second check is to

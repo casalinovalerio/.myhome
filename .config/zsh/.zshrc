@@ -9,7 +9,6 @@ HISTFILE="$ZCACHEDIR/.zhistory"
 HISTSIZE=10000
 SAVEHIST=10000
 [ -d "$ZCUSTOMCOMPLETION" ] && fpath+="$ZCUSTOMCOMPLETION"
-[ -d "$HOME/.scripts" ] && PATH="$HOME/.scripts/sh:$PATH"
 PATH="/usr/local/bin:/usr/local/sbin/:$PATH"
 ### Load options
 ################
@@ -17,10 +16,10 @@ autoload -Uz compinit colors && compinit -d && colors
 zmodload zsh/terminfo
 ### Plugins
 ##################
-source "$ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-source "$ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
-source "$ZDOTDIR/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh"
-source "$ZDOTDIR/plugins/minimal-prompt/minimal-prompt.zsh"
+source "$ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "$ZPLUGINDIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$ZPLUGINDIR/zsh-history-substring-search/zsh-history-substring-search.zsh"
+source "$ZPLUGINDIR/minimal-prompt/minimal-prompt.zsh"
 ### Completion Settings
 ### http://zsh.sourceforge.net/Doc/Release/Completion-System.html
 ####################### 
