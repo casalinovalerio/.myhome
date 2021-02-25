@@ -87,3 +87,8 @@ function myhome_submodules_update() {
 function rfc() {
     curl -s --fail "https://tools.ietf.org/rfc/rfc${1}.txt" | less
 }
+function swap-history()         
+{
+    local TMPFILE=$( mktemp )
+    mv "$ZCACHEDIR/.zhistory" $TMPFILE && mv "$ZCACHEDIR/.zhistory.bak" "$ZCACHEDIR/.zhistory" && mv $TMPFILE "$ZCACHEDIR/.zhistory.bak"
+}
