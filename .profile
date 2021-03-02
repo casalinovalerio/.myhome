@@ -5,7 +5,7 @@ XDG_CACHE_HOME="$HOME/.cache"
 
 ### Default programs
 export EDITOR="nvim"
-export TERMINAL="alacritty"
+export TERMINAL="terminator"
 export BROWSER="brave"
 export READER="zathura"
 
