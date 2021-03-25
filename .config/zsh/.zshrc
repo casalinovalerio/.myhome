@@ -1,22 +1,98 @@
+# ~/.config/zsh/.zshrc
+# This config file is provided by 5amu (https://github.com/5amu)
+# and it is a collection of my configurations, specific to my
+# workflow. Feel free to customise it for your needs, repackage
+# it, including a mention to my work, more specifically, at least
+# my GitHub username and the repo https://github.com/5amu/.myhome
+# Thanks, and enjoy... :)
+
 ### Set options
 ### http://zsh.sourceforge.net/Doc/Release/Options.html
-############### 
-setopt menu_complete histignorealldups autocd autopushd recexact nobgnice 
-setopt longlistjobs appendhistory prompt_subst share_history
+#######################################################
+
+# If a command is issued that can’t be executed as a normal command, 
+# and the command is the name of a directory, perform the cd command 
+# to that directory. This option is only applicable if the option 
+# SHIN_STDIN is set, i.e. if commands are being read from standard input. 
+# The option is designed for interactive use; it is recommended that cd 
+# be used explicitly in scripts to avoid ambiguity.
+setopt autocd
+
+# Make cd push the old directory onto the directory stack.
+setopt autopushd
+
+# If this is set, zsh sessions will append their history list to the 
+# history file, rather than replace it. Thus, multiple parallel zsh sessions 
+# will all have the new entries from their history lists added to the history 
+# file, in the order that they exit. The file will still be periodically 
+# re-written to trim it when the number of lines grows 20% beyond the value 
+# specified by $SAVEHIST (see also the HIST_SAVE_BY_COPY option).
+setopt appendhistory
+
+# On an ambiguous completion, instead of listing possibilities or beeping, 
+# insert the first match immediately. Then when completion is requested 
+# again, remove the first match and insert the second match, etc. When there
+# are no more matches, go back to the first one again. reverse-menu-complete 
+# may be used to loop through the list in the other direction. This option 
+# overrides AUTO_MENU.
+setopt menu_complete
+
+# If a new command line being added to the history list duplicates an 
+# older one, the older command is removed from the list (even if it is not 
+# the previous event).
+setopt histignorealldups
+
+# If the string on the command line exactly matches one of the possible 
+# completions, it is accepted, even if there is another completion (i.e. 
+# that string with something else added) that also matches.
+setopt recexact
+
+# Run all background jobs at a lower priority. This option is set by default.
+# DISABLED BY "NO"
+setopt nobgnice
+
+# Print job notifications in the long format by default.
+setopt longlistjobs
+
+# If set, parameter expansion, command substitution and arithmetic 
+# expansion are performed in prompts. Substitutions within prompts do not 
+# affect the command status.
+setopt prompt_subst
+
+# This option both imports new commands from the history file, and also
+# causes your typed commands to be appended to the history file (the latter
+# is like specifying INC_APPEND_HISTORY, which should be turned off if this
+# option is in effect). The history lines are also output with timestamps
+# ala EXTENDED_HISTORY (which makes it easier to find the spot where we
+# left off reading the file after it gets re-written).
+# By default, history movement commands visit the imported lines as
+# well as the local lines, but you can toggle this on and off with the
+# set-local-history zle binding. It is also possible to create a zle
+# widget that will make some commands ignore imported commands, and some
+# include them.
+# If you find that you want more control over when commands get
+# imported, you may wish to turn SHARE_HISTORY off, INC_APPEND_HISTORY or
+# INC_APPEND_HISTORY_TIME (see above) on, and then manually import commands
+# whenever you need them using ‘fc -RI’.
+setopt share_history
 
 ### Set variables
 #################
 HISTFILE="$ZCACHEDIR/.zhistory"
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=5000
+SAVEHIST=5000
 
 ### Load options
 ################
-autoload -Uz compinit colors edit-command-line && compinit -d && colors
-zle -N edit-command-line && zmodload zsh/terminfo
+autoload -Uz compinit 
+autoload -Uz colors 
+autoload -Uz edit-command-line 
+compinit -d  && colors
+zle -N edit-command-line
+zmodload zsh/terminfo
 
 ### Plugins
-##################
+###########
 if [ -f "$ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ];
 then
     source "$ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
@@ -72,8 +148,8 @@ fi
 if [ -f "$ZPLUGINDIR/zsh-history-substring-search/zsh-history-substring-search.zsh" ];
 then
     source "$ZPLUGINDIR/zsh-history-substring-search/zsh-history-substring-search.zsh"
-    bindkey '^[[A'    history-substring-search-up
-    bindkey '^[[B'    history-substring-search-down
+    bindkey '^[[A'             history-substring-search-up
+    bindkey '^[[B'             history-substring-search-down
     bindkey "$terminfo[kcuu1]" history-substring-search-up
     bindkey "$terminfo[kcud1]" history-substring-search-down
 fi
@@ -85,15 +161,19 @@ fi
 ### Completion Settings
 ### http://zsh.sourceforge.net/Doc/Release/Completion-System.html
 ####################### 
-zstyle ':completion:*' accept-exact '*(N)'
-zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path "$CACHE_DIR/$HOST"
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# General completion settings
+zstyle ':completion:*' accept-exact  '*(N)'
+zstyle ':completion:*' matcher-list  'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select=1 _complete _ignored _approximate
-zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+zstyle ':completion:*' select-prompt '%SScrolling active: %p%s'
+# Using cache
+zstyle ':completion:*:complete:*' use-cache  on
+zstyle ':completion:*:complete:*' cache-path "$ZCACHEDIR"
+# Messages formats
 zstyle ':completion:*:descriptions' format '%B%d%b'
-zstyle ':completion:*:messages' format '%d'
-zstyle ':completion:*:warnings' format 'No matches for: %d'
+zstyle ':completion:*:messages'     format '%d'
+zstyle ':completion:*:warnings'     format 'No match for: %d'
+# Use case specific completion functions
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 
@@ -130,19 +210,18 @@ export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 
 ### Set alias
 #############
-alias \
-    cls="clear" \
-    ..="cd .." \
-    cd..="cd .." \
-    ll="ls -lisa --color=auto" \
-    ls="ls -CF --color=auto" \
-    psgrep="ps aux | grep -v grep | grep -i -e VSZ -e" \
-    grep='grep --color=auto' \
-    open="xdg-open" \
-    myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME" \
+alias cls="clear"
+alias ..="cd .."
+alias cd..="cd .."
+alias ll="ls -lisa --color=auto"
+alias ls="ls -CF --color=auto"
+alias psgrep="ps aux | grep -v grep | grep -i -e VSZ -e"
+alias grep='grep --color=auto'
+alias open="xdg-open"
+alias myhome="/usr/bin/git --git-dir=$HOME/.myhome/ --work-tree=$HOME"
 
 ### Set functions
-########################
+#################
 function setgovernor() 
 {
   [ -z "$1" ] && return 1
@@ -153,18 +232,6 @@ function setgovernor()
 function url_encode() 
 {
   python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$1"
-}
-
-function myhome_submodules_update() 
-{
-  local _list=$( grep "path" "$HOME/.gitmodules" | cut -d"=" -f2 | tr -d ' ' )
-  local _myhome="$HOME/.myhome/"
-  while IFS= read -r _path; do
-    git --git-dir="${HOME}/${_path}/.git" pull origin master;
-  done <<< "$_list"
-  git --git-dir="$_myhome" --work-tree="$HOME" add $( tr '\n' ' ' <<< "$_list" )
-  git --git-dir="$_myhome" --work-tree="$HOME" commit -m "Updated submod"
-  git --git-dir="$_myhome" --work-tree="$HOME" push origin master
 }
 
 function rfc() 
@@ -179,3 +246,31 @@ function swap-history()
     mv "$ZCACHEDIR/.zhistory.bak" "$ZCACHEDIR/.zhistory" 
     mv $TMPFILE "$ZCACHEDIR/.zhistory.bak"
 }
+
+function greetings()
+{
+	local greet=()
+	greet+=("I use Arch BTW")
+	greet+=("Arch Chad")
+	greet+=("Arch Master Race")
+	greet+=("No Ubuntu peasant")
+    printf "=%.0s" {1..$(tput cols)}; echo
+    printf "=%.0s" {1..$(tput cols)}; echo
+    if command -v figlet 1>/dev/null 2>&1
+    then
+		echo $(shuf -n 1 -e ${greet[@]}) | figlet -c -f smslant
+	else
+		echo $(shuf -n 1 -e ${greet[@]})
+	fi
+    printf "=%.0s" {1..$(tput cols)}; echo
+    printf "=%.0s" {1..$(tput cols)}; echo
+}
+
+### Greet
+#########
+if command -v lolcat 1>/dev/null 2>&1
+then
+	greetings | lolcat 2>/dev/null
+else
+	greetings
+fi
