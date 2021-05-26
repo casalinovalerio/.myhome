@@ -79,8 +79,8 @@ setopt share_history
 ### Set variables
 #################
 HISTFILE="$ZCACHEDIR/.zhistory"
-HISTSIZE=5000
-SAVEHIST=5000
+HISTSIZE=10000
+SAVEHIST=10000
 
 ### Load options
 ################
@@ -153,9 +153,12 @@ then
     bindkey "$terminfo[kcuu1]" history-substring-search-up
     bindkey "$terminfo[kcud1]" history-substring-search-down
 fi
-if [ -f "$ZPLUGINDIR/minimal-prompt/minimal-prompt.zsh" ];
-then
-    source "$ZPLUGINDIR/minimal-prompt/minimal-prompt.zsh"
+#if [ -f "$ZPLUGINDIR/minimal-prompt/minimal-prompt.zsh" ];
+#then
+#    source "$ZPLUGINDIR/minimal-prompt/minimal-prompt.zsh"
+#fi
+if /usr/bin/starship -V >/dev/null; then
+    source <("/usr/bin/starship" init zsh --print-full-init)
 fi
 
 ### Completion Settings
@@ -246,31 +249,3 @@ function swap-history()
     mv "$ZCACHEDIR/.zhistory.bak" "$ZCACHEDIR/.zhistory" 
     mv $TMPFILE "$ZCACHEDIR/.zhistory.bak"
 }
-
-function greetings()
-{
-	local greet=()
-	greet+=("I use Arch BTW")
-	greet+=("Arch Chad")
-	greet+=("Arch Master Race")
-	greet+=("No Ubuntu peasant")
-    printf "=%.0s" {1..$(tput cols)}; echo
-    printf "=%.0s" {1..$(tput cols)}; echo
-    if command -v figlet 1>/dev/null 2>&1
-    then
-		echo $(shuf -n 1 -e ${greet[@]}) | figlet -c -f smslant
-	else
-		echo $(shuf -n 1 -e ${greet[@]})
-	fi
-    printf "=%.0s" {1..$(tput cols)}; echo
-    printf "=%.0s" {1..$(tput cols)}; echo
-}
-
-### Greet
-#########
-if command -v lolcat 1>/dev/null 2>&1
-then
-	greetings | lolcat 2>/dev/null
-else
-	greetings
-fi
