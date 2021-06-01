@@ -12,6 +12,6 @@ error_symbol = "[✗](red)"
 style = "cyan"
 
 [custom.vpn]
-when    = " /usr/bin/vpnips " 
-command = " /usr/bin/vpnips "
+when    = " ip l show tun0 || ip l show tap0 >/dev/null " 
+command = " ip a | grep -e 'inet.*tun\\|inet.*tap' | awk '{print $2}' | cut -d '/' -f 1 | tr '\n' '-' | sed 's/-$//g' "
 format  = " [ ($output)](yellow) "
