@@ -28,3 +28,5 @@ if [ -z "$WAYLAND_DISPLAY" ]; then
         TERMINAL="env WAYLAND_DISPLAY= $TERMINAL"
     fi
 fi
+
+export VAGRANT_HOME=/opt/vagrant.d
